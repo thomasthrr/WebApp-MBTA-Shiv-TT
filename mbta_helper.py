@@ -8,8 +8,6 @@ MBTA_BASE_URL = "https://api-v3.mbta.com/stops"
 
 
 # A little bit of scaffolding if you want to use it
-
-
 def get_json(url: str) -> dict:
     """
     Given a properly formatted URL for a JSON web API request, return a Python JSON object containing the response to that request.
@@ -48,7 +46,7 @@ def find_stop_near(place_name: str) -> tuple[str, bool]:
 
 def main():
     """
-    You can test all the functions here
+    You should test all the above functions here
     """
     pass
 
