@@ -4,7 +4,7 @@
 
 Welcome to the MBTA Helper project! 
 
-You may have used multiple Python libraries to access information on the Internet. For example, `tweepy` can get Twitter data by interacting with Twitter's application programming interface (API). In this project, you will access web APIs directly and begin to write your own package/program to connect with new data sources. Then you will build a simple website containing some webpages with a small amount of dynamic content using the `Flask` web framework. This website will help people find a nearby MBTA station and other information by providing an address or point of interest. As part of the project, you are encouraged to use ChatGPT to explore APIs and Python libraries that have not been covered yet. 
+You may have used multiple Python libraries to access information on the Internet. For example, `praw` can get Reddit data by interacting with Reddit's application programming interface (API). In this project, you will access web APIs directly and begin to write your own package/program to connect with new data sources. Then you will build a simple website containing some webpages with a small amount of dynamic content using the `Flask` web framework. This website will help people find a nearby MBTA station and other information by providing an address or point of interest. As part of the project, you are encouraged to use ChatGPT to explore APIs and Python libraries that have not been covered yet. 
 
 ### Skills Emphasized
 
@@ -20,9 +20,11 @@ Throughout this project, you'll focus on developing the following skills:
 - If you work in a team, one team member should fork this base repository for the project. The person who forks the repository should then add their team members as collaborators on GitHub for that repository. This will ensure that everyone has access to the code and can work together effectively.
 
 ---
+
 ## Part 1: Geocoding and Web APIs
 
 The goal for Part 1 to deal with geographical data. You will write a tool that takes an address or place name and returns the closest MBTA stop and other information about that MBTA stop. For example: 
+
 ```python   
 import mbta_helper
 print(mbta_helper.find_stop_near("Boston Common"))
@@ -50,24 +52,27 @@ APIs allow you make requests using specifically constructed URLs and return data
 ### 2. Structured Data Responses (JSON)
 
 Back? Ok cool, let's try it out in Python. We're going to request the response in JSON format, which we can decode using Python's [`json` module](https://docs.python.org/3/library/json.html).
+
 ```python
-import urllib.request
 import json
-from pprint import pprint
+import pprint
+import urllib.request
 
 MAPBOX_BASE_URL = "https://api.mapbox.com/geocoding/v5/mapbox.places"
 MAPBOX_TOKEN = 'YOUR MAPBOX API ACCESS TOKEN'
-query = 'Babson%20College'
+query = 'Babson College'
+query = query.replace(' ', '%20') # In URL encoding, spaces are typically replaced with "%20."
 url=f'{MAPBOX_BASE_URL}/{query}.json?access_token={MAPBOX_TOKEN}&types=poi'
 print(url) # Try this URL in your browser first
 
 with urllib.request.urlopen(url) as f:
     response_text = f.read().decode('utf-8')
     response_data = json.loads(response_text)
-    pprint(response_data)
+    pprint.pprint(response_data)
 ```
 
 We used the [`pprint` module](https://docs.python.org/3/library/pprint.html) to "pretty print" the response data structure with indentation, so it's easier to visualize. You should see something similar to the JSON response from the documentation, except built from Python data types. This response data structure is built from nested dictionaries and lists, and you can step through it to access the fields you want.
+
 ```python
 print(response_data['features'][0]['properties']['address'])
 # Output: 231 Forest St
@@ -79,7 +84,7 @@ print(response_data['features'][0]['properties']['address'])
 
 In the above example we passed a hard-coded URL to the `urlopen` function, but in your code you will need to generate the parameters based on user input. Check out [*Understanding URLs*](https://developer.mozilla.org/en-US/docs/Learn/Common_questions/Web_mechanics/What_is_a_URL) and their structure for a helpful guide to URL components and encoding.
 
-You can build up the URL string manually, but it's probably helpful to check out [`urlencode` function](https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlencode) from `urllib.request`.
+You can build up the URL string manually via using f-string, but it's probably helpful to check out [`urlencode` function](https://docs.python.org/3/library/urllib.parse.html#urllib.parse.urlencode) from `urllib.request`.
 
 **What you need to do**: Write a function that takes an address or place name as input and returns a properly encoded URL to make a Mapbox geocoding request.
 
@@ -106,7 +111,7 @@ Then click "Execute" button. You should be able to find a generated URL in Curl.
 
 **Note**: Unfortunagely there are no MBTA stops close enough to Babson College - you have to get out into the city!
 
-### 6. To Wrap-up
+### 5. To Wrap-up
 
 Combine your functions from the previous sections to create a tool that takes a place name or address as input, finds its latitude/longitude, and returns the nearest MBTA stop and whether it is wheelchair accessible.
 
@@ -118,13 +123,15 @@ Combine your functions from the previous sections to create a tool that takes a 
 xkcd 2170 - What the Number of Digits in Your Coordinates Means
 </p>
 
-### 7. Making It Cooler (Optional)
+### 6. Making It Cooler (Optional)
+
 - Try out some other MBTA APIs - there are a lot of resources, and we have barely scratched the surface.
 - By default, `stops` gives all types of transportation, including buses and commuter rail. Allow the user to specify how they'd like to travel (e.g. T only).
 - Incorporate the MBTA realtime arrival data to suggest the optimal station to walk to.
 - Connect with other local services. Example: the City of Boston has [an app](https://www.boston.gov/transportation/street-bump) that uses a phone's GPS and accelerometer to automatically report potholes to be fixed. You can also see many other apps developed for Boston residents [here](https://www.boston.gov/departments/innovation-and-technology/city-boston-apps).
 
 ---
+
 ## Part 2: Web App
 
 The goal for Part 2 is to build a simple website that uses the `mbta_helper` module you created in Part 1. 
@@ -151,13 +158,14 @@ This is where Flask comes in - it enables you to create the logic to make a web 
 
 ### 3. Flask Quickstart
 
-Read the following sections of [Flask Quickstart documentation](https://flask.palletsprojects.com/en/2.2.x/quickstart/):
+Read the following sections of [Flask Quickstart documentation](https://flask.palletsprojects.com/en/3.0.x/quickstart/):
 
 - A Minimal Application
 - Debug Mode
 - Routing
     - Variable Rules
-    - Unique URLs / Redirection Behavior
+    - Unique URLs / Redirection 
+    - Behavior
     - URL Building
     - HTTP Methods
 - Static Files
@@ -172,7 +180,7 @@ What use is a web application if you can't get any data back from the user? Let'
 
 1. Upon visiting the index page at `http://127.0.0.1:5000/`, the user will be greeted by a page that says hello, and includes an input **form** that requests a place name.
 2. Upon clicking the 'Submit' button, the data from the form will be sent via a **POST** request to the Flask backend at the route `POST /nearest_mbta`
-3. (Optional) Perform some simple validation on the user input. You can use [wtforms](https://flask.palletsprojects.com/en/2.2.x/patterns/wtforms/) to implement the validation.
+3. (Optional) Perform some simple validation on the user input. You can use [wtforms](https://flask.palletsprojects.com/en/3.0.x/patterns/wtforms/) to implement the validation.
 4. The Flask backend will handle the request to `POST /nearest_mbta`. Then your app will render a `mbta_station` page for the user - presenting nearest MBTA stop and whether it is wheelchair accessible. In this step, you need to use/import the module you created for **Part 1**.
 5. If something is wrong, the app will render a simple error page, which will include some indication that the search did not work, along with a button or link that redirects the user back to the home page.
 
@@ -180,15 +188,15 @@ It will be up to you to make this happen. If you feel confident in your ability 
 
 ### 5. Tips and Tricks
 
-To complete this project, the official [Flask documentation](https://flask.palletsprojects.com/en/2.2.x/#user-s-guide) will get you pretty far.
+To complete this project, the official [Flask documentation](https://flask.palletsprojects.com/en/3.0.x/#user-s-guide) will get you pretty far.
 
-- **HTML Forms:**. To make forms in HTML, check out [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form) and/or [*W3Schools*](https://www.w3schools.com/html/html_forms.asp). For even more information, check [*this*](https://lmgtfy.app/?q=html+forms) out.
+- **HTML Forms:**. To make forms in HTML, check out [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/form) and/or [*W3Schools*](https://www.w3schools.com/html/html_forms.asp). For even more information, check [*this*](https://letmegooglethat.com/?q=html%2Bforms) out.
 
 - **Sending `POST` Requests:** To send the data from the form in a `POST` request, use an input with type `submit`, and set the action of the form to reflect the destination in your routes.
 
-- **Handling POST Requests:** To learn more about handling post requests in Flask, read section [*HTTP Methods*](https://flask.palletsprojects.com/en/2.2.x/quickstart/#http-methods) again.
+- **Handling POST Requests:** To learn more about handling post requests in Flask, read section [*HTTP Methods*](https://flask.palletsprojects.com/en/3.0.x/quickstart/#http-methods) again.
 
-- **Accessing the Form Data:** To access the form data, check out section [*'The Request Object'*](https://flask.palletsprojects.com/en/2.2.x/quickstart/#the-request-object) on using the Flask `request` utility.
+- **Accessing the Form Data:** To access the form data, check out section [*'The Request Object'*](https://flask.palletsprojects.com/en/3.0.x/quickstart/#the-request-object) on using the Flask `request` utility.
 
 ### 6. Going Further (Optional)
 
@@ -201,6 +209,7 @@ To complete this project, the official [Flask documentation](https://flask.palle
 - **Interested in an alternative to Flask?** Learn more about [Django](https://www.djangoproject.com/). They don't have many major differences other than some small quirks in conventions and style. 
 
 ---
+
 ## Part 3: *Wow!* Factors (15%)
 
 After completing the required parts of this project, you can spice it up by adding additional features. Some suggestions:
@@ -210,15 +219,17 @@ After completing the required parts of this project, you can spice it up by addi
 3. Any interesting events in the nearby area? Try [Ticketmaster API](https://developer.ticketmaster.com/products-and-docs/apis/getting-started/) to find out concerts, sport events information.
 4. Yes, you guessed it! - More APIs. Some suggestions:
     - [GitHub repository - Public APIs](https://github.com/public-apis/public-apis) 
-    - [RapidAPI - Discover More APIs](https://rapidapi.com/hub)
+   - [RapidAPI - Discover More APIs](https://rapidapi.com/hub)
+   - [ApiVault](https://apivault.dev/) 
+   - [APIs.guru](https://apis.guru/)
 
 ---
+
 ## Project Wrap-up
 
 ### 1. Getting Started
 
 To begin the assignment, one team member should **fork** this base repository, then add the other member(s) as **collaborators** on GitHub. Once you've forked the repository, clone the forked repository (the one under your GitHub profile) to your computer.
-
 
 ### 2. Project Writeup and Reflection
 
@@ -236,7 +247,7 @@ After you finish the project, Please write a short document for reflection.
 
 2. Discuss your **team's work division**, including how the work was planned to be divided and how it actually happened. Address any issues that arose while working together and how they were addressed. Finally, discuss what you would do differently next time.
 
-3. Discuss from a learning perspective, what you learned through this project and how you'll use what you learned going forward. Reflect on how ChatGPT helped you and what you wish you knew beforehand that could have helped you succeed. Consider including screenshots to demonstrate your project's progress and development.
+3. Discuss from a **learning** perspective, what you learned through this project and how you'll use what you learned going forward. Reflect on how ChatGPT helped you and what you wish you knew beforehand that could have helped you succeed. Consider including screenshots to demonstrate your project's progress and development.
 
 **Note**: 
 - Begin by including the names of all team members at the top of the document.
@@ -245,9 +256,8 @@ After you finish the project, Please write a short document for reflection.
 ### 3. Turning in Assignment
 
 1. Push your completed code and updated `README.md` to the forked GitHub repository (depending on which team member's repository is being used to work on the project).
-2. Create a pull request to the upstream repository. Please learn how to create a pull request by following [this instruction](https://docs.github.com/en/desktop/contributing-and-collaborating-using-github-desktop/working-with-your-remote-repository-on-github-or-github-enterprise/creating-an-issue-or-pull-request#creating-a-pull-request).
+2. Create a pull request to the upstream repository. Please learn how to create a pull request by following [this instruction](https://docs.github.com/en/desktop/working-with-your-remote-repository-on-github-or-github-enterprise/creating-an-issue-or-pull-request-from-github-desktop#creating-a-pull-request).
 3. Submit project's GitHub repository URL to Canvas. In the comment area on Canvas, specify names of all team members. **Note: Everyone in the team needs to submit on Canvas and add comment.**
 
-
 ---
-*updated: 3/29/2023*
+*updated: 11/04/2023*
