@@ -61,7 +61,7 @@ import urllib.request
 MAPBOX_BASE_URL = "https://api.mapbox.com/geocoding/v5/mapbox.places"
 MAPBOX_TOKEN = 'YOUR MAPBOX API ACCESS TOKEN'
 query = 'Babson College'
-query = query.replace(' ', '%20') # In URL encoding, spaces are typically replaced with "%20."
+query = query.replace(' ', '%20') # In URL encoding, spaces are typically replaced with "%20"
 url=f'{MAPBOX_BASE_URL}/{query}.json?access_token={MAPBOX_TOKEN}&types=poi'
 print(url) # Try this URL in your browser first
 
@@ -115,13 +115,11 @@ Then click "Execute" button. You should be able to find a generated URL in Curl.
 
 Combine your functions from the previous sections to create a tool that takes a place name or address as input, finds its latitude/longitude, and returns the nearest MBTA stop and whether it is wheelchair accessible.
 
-**Note**: Coordinate precision matters! Check out [xkcd 2170](https://xkcd.com/2170/) and [explanation](https://www.explainxkcd.com/wiki/index.php/2170:_Coordinate_Precision).
+**Note**: Coordinate precision matters! Check out [xkcd 2170](https://xkcd.com/2170/) - *"What the Number of Digits in Your Coordinates Means"* and [explanation](https://www.explainxkcd.com/wiki/index.php/2170:_Coordinate_Precision).
 <p align="center">
 <img src="https://imgs.xkcd.com/comics/coordinate_precision_2x.png" height="400" alt="xkcd 2170" style="display:block; margin-left:auto;margin-right:auto;"/>
 </p>
-<p align="center">
-xkcd 2170 - What the Number of Digits in Your Coordinates Means
-</p>
+
 
 ### 6. Making It Cooler (Optional)
 
@@ -145,7 +143,7 @@ You need to first install `Flask`. Run the following command:
 ```shell
 > python -m pip install flask # on Windows
 # or 
-> python3 -m pip install flask # on MacOS/Linux
+> python3 -m pip install flask # on macOS/Linux
 ```
 
 ### 2. Why Flask?
