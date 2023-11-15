@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hello and welcome!</title>
+    <title>Submit Form</title>
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        p{
+            color: red;
+            background-color: yellow;
+            font-size: 10;
+        }
+        .blue-color{
+            color: blue;
+        }
+        form{
+            background-color: lightgray;
+        }
+        a:hover{
+            background-color: green;
+        }
+
+        form {
+            background-color: lightgray;
+            padding: 25px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        input[type="text"] {
+            margin: 10px 0;
+        }
+    
+    </style>
+</head>
+<body>
+    <p>Please enter a place to find the nearest MBTA station.</p>
+
+<form action="http://127.0.0.1:5000/nearest_mbta" method="post">
+    <label for="placeName">Place Name:</label>
+    <input type="text" id="placeName" name="placeName" required>
+
+    <input type="submit" value="Submit">
+</form>
+
+<form action="/nearest_mbta" method="post">
+    <input type="submit" value="Submit">
+    <!--input fields will appear here-->
+    </form>
+
+    <h1>Hello! <img src= "https://upload.wikimedia.org/wikipedia/commons/thumb/6/64/MBTA.svg/1024px-MBTA.svg.png" alt=""width ="80"</h1>
+</label></form>
+
+
+
+</body>
+</html>
